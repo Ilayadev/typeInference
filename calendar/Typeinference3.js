@@ -103,13 +103,11 @@ function AccesingArray(key, data) {
     let type = data.constructor.name
     let response = ''
     if (type === "Array") {
-        let hasObject = false
-        let objectCount = 0
+        let hasObject = false       
         let type_array = []       
         data.forEach(x => {
             if (x.constructor.name === 'Object') {
-                hasObject = true
-                objectCount++
+                hasObject = true               
             }
         })
         if (hasObject) {
@@ -204,11 +202,11 @@ function Interfacesname(key){
     let response=''
     if(interfaceNames[key]===undefined){
         interfaceNames[key]=0
-         res=key
+         response=key
     }else{
         let  index=interfaceNames[key]
         let name=interfacesExtraNames[index]
-        res=`${name}${key}`
+        response=`${name}${key}`
     }
-    return res
+    return response
 }
