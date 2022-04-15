@@ -1,17 +1,19 @@
 let interfaces = {}
 let interfacesKeys = {}
 let optionalProperties = {}
+let interfaceNames={}
+let interfacesExtraNames=["Second","Third","Fourth","Fifth","Sixth","Seventh","Eight","Ninth","Tenth"]
 function testingpatterns(name, data) {   
     if (typeof data === 'object') {
         if (!Array.isArray(data)) {
-        AccesingObject(name,data)            
+            AccesingObject(name, data)
         } else {
             AccesingArray(name, data)
         }
-    }  
-   for(let key in interfaces){
-       CreatingData(key,interfaces[key])
-   } 
+    }   
+    for (let key in interfaces) {
+        CreatingData(key, interfaces[key])
+    }   
 }
 function AccesingObject(key, data) {
     interfacesKeys[key] = Object.keys(data)
@@ -28,15 +30,16 @@ function LoopingObject(name, ip, is_same) {
                 value = sameKey
                 LoopingObject(sameKey, ip[key], true)
             } else {
-                AccesingObject(key, ip[key])
-                value = key
+                value=Interfacesname(key)
+                AccesingObject(value, ip[key])                
             }
         } else if (type === 'Array') {
             let sameKey = ObjectkeysChecking(ip[key], type)
-            if (sameKey) {                         
-               value= AccesingArray(sameKey,ip[key])
+            if (sameKey) {
+                value = AccesingArray(sameKey, ip[key])
             } else {
-                value=AccesingArray(key, ip[key])               
+                let name=Interfacesname(key)
+                value = AccesingArray(name, ip[key])
             }
         } else {
             value = type
@@ -47,7 +50,7 @@ function LoopingObject(name, ip, is_same) {
         let objectKeys = Object.keys(ip)
         CheckingOptionalProperties(name, interfacesKeys[name], objectKeys)
         CheckingOptionalProperties(name, objectKeys, interfacesKeys[name])
-    }    
+    }
 }
 function AssingValue(object, key, value) {
     if (object[key] === undefined) {
@@ -58,26 +61,28 @@ function AssingValue(object, key, value) {
             object[key] += '|' + value
         }
     }
-}function ObjectkeysChecking(data, type) {
+} function ObjectkeysChecking(data, type) {
     let response = false
     let br = false
     if (type === 'Array') {
-        data = ObjectFromArray(data)                
+        data = ObjectFromArray(data)
     }
     let dataKeys = Object.keys(data)
     let lengthOfKeys = dataKeys.length
-    for (let i = 0; i < lengthOfKeys; i++) {
-        for (let key in interfacesKeys) {
-            let keys = interfacesKeys[key]
-            if (keys.includes(dataKeys[i])) {
-                response = key
-                br = true
-                break
+    for (let key in interfacesKeys) {
+        let array = interfacesKeys[key]
+        let MatchedCount = 0
+        for (let i = 0; i < lengthOfKeys; i++) {
+            if (array.includes(dataKeys[i])) {
+                MatchedCount++
+                if (MatchedCount > 1) {
+                    response = key
+                    br = true
+                    break
+                }
             }
         }
-        if (br) {
-            break
-        }
+        if (br) break
     }
     return response
 }
@@ -100,8 +105,7 @@ function AccesingArray(key, data) {
     if (type === "Array") {
         let hasObject = false
         let objectCount = 0
-        let type_array=[]
-        let existing = true
+        let type_array = []       
         data.forEach(x => {
             if (x.constructor.name === 'Object') {
                 hasObject = true
@@ -109,8 +113,7 @@ function AccesingArray(key, data) {
             }
         })
         if (hasObject) {
-            if (interfaces[key] === undefined) {
-                existing = false
+            if (interfaces[key] === undefined) {                
                 interfaces[key] = {}
                 interfacesKeys[key] = Object.keys(ObjectFromArray(data))
             }
@@ -118,16 +121,7 @@ function AccesingArray(key, data) {
         if (data.length !== 0) {
             data.forEach((x) => {
                 if (typeof x === 'object' && !Array.isArray(x)) {
-                   if(existing){
-                       LoopingObject(key,x,true)
-                   }else{
-                       LoopingObject(key,x,false)
-                       if(objectCount>1){
-                           let targetKeys=Object.keys(x)
-                        CheckingOptionalProperties(key, interfacesKeys[key],targetKeys)
-                       }
-                   }
-                   
+                    LoopingObject(key, x, true)
                 } else {
                     let pattern = AccesingArray(key, x)
                     if (type_array.includes(pattern)) {
@@ -141,13 +135,13 @@ function AccesingArray(key, data) {
                     }
                 }
             })
-        }else{
-            response="any"
+        } else {
+            response = "any"
         }
-        if(hasObject){
-            response=`${response}${key}`
+        if (hasObject) {
+            response = `${response}${key}`
         }
-        response=`Array<${response}>`
+        response = `Array<${response}>`
     } else {
         response = type
     }
@@ -168,7 +162,7 @@ function CreatingData(name, obj) {
     for (let key in obj) {
         let mid_sep;
         let end_sep = ';';
-        if (optionalProperties[name] &&optionalProperties[name].includes(key)) {
+        if (optionalProperties[name] && optionalProperties[name].includes(key)) {
             mid_sep = '?:'
         } else {
             mid_sep = ':'
@@ -205,4 +199,16 @@ function creatingcurlyparent() {
     span.classList.add('leftcurly')
     span.innerText = '}';
     document.querySelector('.overall').appendChild(span)
+}
+function Interfacesname(key){
+    let response=''
+    if(interfaceNames[key]===undefined){
+        interfaceNames[key]=0
+         res=key
+    }else{
+        let  index=interfaceNames[key]
+        let name=interfacesExtraNames[index]
+        res=`${name}${key}`
+    }
+    return res
 }
