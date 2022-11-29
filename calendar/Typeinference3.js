@@ -21,8 +21,14 @@ function AccesingObject(key, data) {
     LoopingObject(key, data, false)
 }
 function LoopingObject(name, ip, is_same) {
+     
     for (let key in ip) {
-        let type = ip[key].constructor.name
+        let type;
+        if(ip[key]){
+            type=ip[key].constructor.name
+        }else{
+            type="null"    
+        }        
         let value;
         if (type === 'Object') {
             let sameKey = ObjectkeysChecking(ip[key], type)
@@ -155,7 +161,7 @@ function ObjectFromArray(array) {
     return obj
 }
 function CreatingData(name, obj) {
-    // let interface_name = name[0].toUpperCase() + name.slice(1)
+    let interface_name = name[0].toUpperCase() + name.slice(1)
     creatingInterfaceElement(name);
     for (let key in obj) {
         let mid_sep;
