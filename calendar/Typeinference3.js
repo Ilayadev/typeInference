@@ -80,8 +80,8 @@ function AssingValue(object, key, value) {
         let MatchedCount = 0
         for (let i = 0; i < lengthOfKeys; i++) {
             if (array.includes(dataKeys[i])) {
-                MatchedCount++
-                if (MatchedCount > 1) {
+                MatchedCount++             
+                if(MatchedCount>=Math.round(array.length/2)){
                     response = key
                     br = true
                     break
